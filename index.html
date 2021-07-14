@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body
+{
+  font-family: "Times New Roman", Times, serif;
+  font-weight: bold;
+  background-color: white;
+}
+
+#widget
+{
+  height: 80px;
+  width: 415px;
+  position: relative;
+  border-radius: 8px;
+}
+
+h1
+{
+  position: absolute;
+  left: 52px;
+  top:2px;
+  font-size: 18px;
+}
+
+img
+{
+  width: 30px;
+  height: auto;
+  position:absolute;
+  bottom: 10.5px;
+  left: 13px;
+}
+
+/*
+#progress-bar {
+    appearance: none;
+    position: absolute;
+    height: 5px;
+    background: #000000;
+    width: 200pt;
+    bottom: 20px;
+    border-radius: 1px;
+    left: 79px;
+}
+*/
+
+#progress-bar {
+    position: absolute;
+    height: 5px;
+    background: #000000;
+    width: 200pt;
+    bottom: 18px;
+    border-radius: 1px;
+    left: 75px;}
+
+input[type=range]{
+    -webkit-appearance: none;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    width: 300px;
+    height: 5px;
+    background: #ddd;
+    border: none;
+}
+
+input[type=range]:focus {
+    outline: none;
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #ccc;
+}
+
+.kit {
+    -webkit-appearance:none;
+    appearance:none;
+    margin:5px;
+    width:calc(100% - 10px);
+    width:-webkit-calc(100% - 10px);
+    height:25px;
+    outline:none;
+    overflow: hidden;
+}
+
+.kit::-webkit-slider-thumb {
+    -webkit-appearance:none;
+    appearance:none;
+    width:5px;
+    height:5px;
+    background:black;
+    box-shadow: -99vw 0 0 calc(99vw - 3px) black;
+    cursor:pointer;
+}
+
+
+.currentTime {
+    position: absolute;
+    cursor: pointer;
+    bottom: 17px;
+    left: 48px;
+    font-size: 13px;
+    color: black;
+}
+
+#progress-bar:focus {
+    outline: none;
+}
+
+.durationTime {
+    position: absolute;
+    cursor: pointer;
+    font-size: 13px;
+    color: black;
+    bottom: 17px;
+    left: 355px;
+}
+  </style>
+</head>
+
+<body>
+<div id="widget">
+
+<h1>♫ Is This Love - Vincenzo OST Part 4 ♫</h1>
+    
+  <img src="https://raw.githubusercontent.com/sarahmcxxv/notion-vin-musicplayer/main/play.png" onclick="playPause()" id="play-pause"/>
+  
+<div id="barcontainer">
+<input
+  type="range"
+  id="progress-bar"
+  class="kit"
+  min="0"
+  max=""
+  value="0"
+  onchange="changeProgressBar()"/>
+</div>
+
+    <div class="currentTime"></div>
+    <div class="durationTime"></div>
+  
+</div>
+
+
+  <audio src="https://a.pomf.cat/dntrhe.mp3" id="song"></audio> 
+  
+  <script>
+  
+const song = document.querySelector('#song');
+const progressBar = document.querySelector('#progress-bar'); // element where progress bar appears
+let pPause = document.querySelector('#play-pause');
+
+<!--Play button-->
+let playing = true;
+
+function playPause() {
+  if (playing) {
+    pPause.src ="https://raw.githubusercontent.com/sarahmcxxv/notion-vin-musicplayer/main/pause.png"; //this will change the Play button to a Pause button
+    song.play(); //this will play the audio track
+    playing = false;
+  } 
+  
+  else {
+    pPause.src = "https://raw.githubusercontent.com/sarahmcxxv/notion-vin-musicplayer/main/play.png";
+    song.pause();
+    playing = true;
+  }
+}
+
+// update progressBar.max to song object's duration, same for progressBar.value, update currentTime/duration DOM
+function updateProgressValue() {
+    progressBar.max = song.duration;
+    progressBar.value = song.currentTime;
+    document.querySelector('.currentTime').innerHTML = (formatTime(Math.floor(song.currentTime)));
+    if (document.querySelector('.durationTime').innerHTML === "NaN:NaN") {
+        document.querySelector('.durationTime').innerHTML = "0:00";
+    } else {
+        document.querySelector('.durationTime').innerHTML = (formatTime(Math.floor(song.duration)));
+    }
+};
+
+// convert song.currentTime and song.duration into MM:SS format
+function formatTime(seconds) {
+    let min = Math.floor((seconds / 60));
+    let sec = Math.floor(seconds - (min * 60));
+    if (sec < 10){ 
+        sec  = `0${sec}`;
+    };
+    return `${min}:${sec}`;
+};
+
+// run updateProgressValue function every 1/2 second to show change in progressBar and song.currentTime on the DOM
+setInterval(updateProgressValue, 500);
+
+// function where progressBar.value is changed when slider thumb is dragged without auto-playing audio
+function changeProgressBar() {
+    song.currentTime = progressBar.value;
+};
+  </script>
+  
+  
+  
+</body>
+
+</html>
